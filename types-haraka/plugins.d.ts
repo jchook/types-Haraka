@@ -1,8 +1,10 @@
 declare module 'haraka/plugins' {
   import { Server } from 'haraka/server';
+  import { HookHandlers } from 'haraka/hooks';
 
-  export class Plugin {
+  export class Plugin implements Partial<HookHandlers> {
     register(server: Server): void;
+    register_hook(hook: keyof HookHandlers, method: string): void;
     // TODO: Add other methods
   }
 
