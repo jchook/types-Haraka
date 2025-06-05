@@ -1,0 +1,82 @@
+# Overview
+The Haraka Type Declarations project aims to provide high-quality TypeScript declaration files for the Haraka mail server and its core dependencies. The primary goal is to enable static typing for Haraka plugin development, improving developer experience, reliability, and maintainability. The long-term vision is to contribute these types to DefinitelyTyped (e.g., as @types/haraka), but the immediate focus is on local consumption and rapid iteration using pnpm workspaces.
+
+Haraka is a modular, plugin-driven SMTP server written in JavaScript. Its ecosystem includes several related packages (haraka-constants, haraka-utils, haraka-notes, haraka-net-utils, haraka-results, address-rfc2821, ipaddr.js). This project will reference the unmodified Haraka source code as the canonical reference for all type definitions. The Haraka source must remain strictly read-only throughout the project.
+
+# Core Features
+- **Comprehensive Type Declarations**: TypeScript declaration files for Haraka core and its key dependencies, enabling static analysis and type safety for plugin authors.
+- **pnpm Workspace Integration**: Use pnpm workspaces and the workspace: protocol to allow local development and rapid feedback between type packages and consumer apps/plugins.
+- **Plugin-Based Testing**: Develop one or more contrived Haraka plugins that exercise all available hooks ([Haraka Plugin Hooks](https://haraka.github.io/core/Plugins)), ensuring type coverage and correctness.
+- **Iterative Development Loop**: Types are refined through repeated cycles of definition, consumption, testing (static and runtime), and revision.
+- **TypeScript Best Practices**: Adhere to official TypeScript declaration file guidelines ([TypeScript Handbook: Declaration Files](https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html)), including:
+  - Avoiding `any`; use `unknown` if the type is not known
+  - Prefer precise types and interfaces
+  - Use module augmentation and declaration merging where appropriate
+  - Avoid polluting the global namespace
+
+# User Experience
+- **User Personas**: JavaScript/TypeScript developers writing Haraka plugins, maintainers of Haraka or its dependencies, and contributors to DefinitelyTyped.
+- **Key User Flows**:
+  1. Install type packages via pnpm workspace or npm (eventually via DefinitelyTyped)
+  2. Reference types in plugin or app code for static analysis and autocompletion
+  3. Iterate on type definitions and immediately see feedback in consumer code
+- **UX Considerations**: Types should be discoverable, well-documented, and closely match the real Haraka API. The development workflow should minimize friction for both type authors and consumers.
+
+# Technical Architecture
+- **System Components**:
+  - `types-haraka/`: Main TypeScript declaration package (may re-export sub-packages in the future)
+  - `types-haraka-constants/`, etc.: Potential sub-packages for individual Haraka dependencies (to be split out if/when needed)
+  - `Haraka/`: Read-only reference source code for Haraka and its dependencies
+  - `app/`: Example app and plugins that consume the types for testing and validation
+- **Data Models**: TypeScript interfaces, types, and module declarations that mirror the Haraka API and plugin hooks
+- **APIs and Integrations**: Types will be validated by consuming them in real plugin code and running Haraka with those plugins
+- **Infrastructure Requirements**: Node.js, pnpm, TypeScript (latest stable), Haraka (as a dev dependency for reference and runtime testing)
+
+# Development Roadmap
+- **Phase 1: Initial Analysis & Setup**
+  - Catalog all key interfaces, types, and modules in the Haraka source and its dependencies
+  - Set up pnpm workspaces and initial types-haraka package
+  - Outline the key interfaces and where to find them in the Haraka source
+- **Phase 2: Type Definition & Iteration**
+  - Begin implementing type declarations in types-haraka
+  - Develop one or more contrived plugins that exercise all Haraka hooks
+  - Use the app/ consumer to validate types via static analysis and runtime tests (e.g., with swaks or smtp-connection)
+  - Iterate on types based on feedback from static analysis, runtime behavior, and real plugin usage
+- **Phase 3: Modularization (if needed)**
+  - Split out types for dependencies (e.g., types-haraka-constants) if it improves maintainability or usability
+  - Ensure the main types-haraka package re-exports sub-packages as needed
+- **Phase 4: Preparation for DefinitelyTyped**
+  - Refine types for community standards and compatibility
+  - Prepare documentation and tests for submission to DefinitelyTyped
+
+# Logical Dependency Chain
+1. **Foundation**: Set up pnpm workspaces, establish read-only Haraka reference, and create initial types-haraka package
+2. **Type Analysis**: Catalog and outline all key interfaces and modules in Haraka and dependencies
+3. **Type Definition**: Implement initial type declarations for core Haraka APIs and plugin hooks
+4. **Plugin Testing**: Develop plugins that exercise all hooks and validate types in real usage
+5. **Iteration**: Refine types based on feedback from static and runtime analysis
+6. **Modularization**: Split out and re-export types for dependencies if/when needed
+7. **Community Contribution**: Prepare for DefinitelyTyped submission
+
+# Risks and Mitigations
+- **Technical Challenges**: Haraka and its dependencies may use dynamic patterns that are hard to type. Mitigation: Use `unknown` and refine types iteratively; consult Haraka maintainers if needed.
+- **MVP Definition**: The minimum viable set of types may be unclear. Mitigation: Focus on plugin development use cases and core hooks first.
+- **Resource Constraints**: Type definition is time-consuming and may require deep dives into undocumented code. Mitigation: Prioritize by usage frequency and importance; document findings in the appendix.
+- **Type Conflicts**: Splitting types into sub-packages may introduce conflicts. Mitigation: Carefully manage exports and avoid duplication; use namespace imports where appropriate.
+
+# Appendix
+- **Research Findings**:
+  - [TypeScript Handbook: Declaration Files](https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html)
+  - [Haraka Plugin Hooks](https://haraka.github.io/core/Plugins)
+- **Technical Specifications**:
+  - Node.js (latest LTS)
+  - pnpm (latest)
+  - TypeScript (latest stable)
+  - Haraka (latest)
+- **Key Rules for Type Declarations**:
+  - Never use `any`; use `unknown` if the type is not known
+  - Prefer precise, minimal, and composable types
+  - Use module augmentation and declaration merging as needed
+  - Avoid polluting the global namespace
+  - Document all types and interfaces
+- **Plugin Hook List**: See [Haraka Plugin Hooks](https://haraka.github.io/core/Plugins) for the full list of hooks to be covered in testing plugins.
